@@ -67,6 +67,41 @@ function renderPages() {
       if (answers[page.id]) inp.value = answers[page.id];
       inputWrap.appendChild(inp);
 
+    } else if (page.type === "multi-short") {
+      page.fields.forEach((field) => {
+        const fieldWrap = document.createElement("div");
+        fieldWrap.className = "multi-short-field";
+
+        const label = document.createElement("label");
+        label.className = "multi-short-label";
+        label.textContent = field.label;
+        label.setAttribute("for", `input-${field.id}`);
+
+        const inp = document.createElement("input");
+        inp.type = field.id === "email" ? "email" : field.id === "phone" ? "tel" : "text";
+        inp.className = "input-short";
+        inp.placeholder = field.placeholder || "";
+        inp.id = `input-${field.id}`;
+        inp.addEventListener("input", () => saveAnswer(field.id, inp.value));
+        inp.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            // Move to next field or next page
+            const fields = page.fields;
+            const idx = fields.indexOf(field);
+            if (idx < fields.length - 1) {
+              document.getElementById(`input-${fields[idx + 1].id}`).focus();
+            } else {
+              nextPage();
+            }
+          }
+        });
+        if (answers[field.id]) inp.value = answers[field.id];
+
+        fieldWrap.appendChild(label);
+        fieldWrap.appendChild(inp);
+        inputWrap.appendChild(fieldWrap);
+      });
+
     } else if (page.type === "long") {
       const ta = document.createElement("textarea");
       ta.className = "input-long";
@@ -182,7 +217,19 @@ function showPage(index) {
 function nextPage() {
   const page = CONFIG.pages[currentPage];
 
-  if (page.type !== "intro" && page.type !== "choice") {
+  if (page.type === "multi-short") {
+    const requiredFields = page.fields.filter((f) => f.required !== false);
+    const missing = requiredFields.some((f) => !hasAnswer(f.id));
+    if (missing) {
+      shakeCurrentPage();
+      requiredFields.forEach((f) => {
+        const inp = document.getElementById(`input-${f.id}`);
+        if (inp && !inp.value.trim()) inp.classList.add("input-error");
+        if (inp) inp.addEventListener("input", () => inp.classList.remove("input-error"), { once: true });
+      });
+      return;
+    }
+  } else if (page.type !== "intro" && page.type !== "choice") {
     if (page.required && !hasAnswer(page.id)) {
       shakeCurrentPage();
       return;
@@ -237,9 +284,10 @@ function updateNav(index) {
   const isIntro = CONFIG.pages[index].type === "intro";
   const isChoice = CONFIG.pages[index].type === "choice";
 
-  btnBack.style.display = index === 0 ? "none" : "inline-block";
-  btnNext.style.display = (isLast || isIntro || isChoice) ? "none" : "inline-block";
-  btnSubmit.style.display = isLast ? "inline-block" : "none";
+  const isEnding = CONFIG.pages[index].type === "ending";
+  btnBack.style.display = (index === 0 || isEnding) ? "none" : "inline-block";
+  btnNext.style.display = (isLast || isIntro || isChoice || isEnding) ? "none" : "inline-block";
+  btnSubmit.style.display = (isLast && !isEnding) ? "inline-block" : "none";
 }
 
 function updateProgress(index) {
@@ -280,6 +328,13 @@ async function submitForm() {
   const formData = new FormData();
   CONFIG.pages.forEach((page) => {
     if (page.type === "intro") return;
+    if (page.type === "multi-short") {
+      page.fields.forEach((field) => {
+        const val = answers[field.id];
+        if (val) formData.append(field.label, val);
+      });
+      return;
+    }
     const val = answers[page.id];
     if (val !== undefined && val !== "") {
       const label = page.question;
@@ -298,7 +353,7 @@ async function submitForm() {
     });
 
     if (res.ok) {
-      showThankYou();
+      showEnding();
     } else {
       const data = await res.json();
       alert("Submission failed: " + (data.error || "Unknown error. Please try again."));
@@ -312,11 +367,22 @@ async function submitForm() {
   }
 }
 
-function showThankYou() {
+function showEnding() {
   document.getElementById("pagesContainer").style.display = "none";
   document.getElementById("navButtons").style.display = "none";
   document.getElementById("progressBar").style.width = "100%";
   const ty = document.getElementById("thankyouScreen");
+  ty.innerHTML = `
+    <div class="thankyou-inner">
+      <div class="thankyou-icon">✦</div>
+      <h1>You're all done.</h1>
+      <p>Message <strong>"Finished"</strong> to <strong>@kvn.ngon</strong> on Instagram</p>
+      <p style="margin-top:8px; opacity:0.6">Excited to speak to you soon!</p>
+      <a href="https://www.instagram.com/kvn.ngon/" target="_blank" class="btn-start" style="display:inline-block; margin-top:32px; text-decoration:none">
+        Open Instagram →
+      </a>
+    </div>
+  `;
   ty.style.display = "flex";
   void ty.offsetWidth;
   ty.classList.add("active");
