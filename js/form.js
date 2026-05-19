@@ -49,6 +49,11 @@ function renderPages() {
     inputWrap.className = "input-wrap";
 
     if (page.type === "intro") {
+      inner.classList.add("intro-centered");
+      const logo = document.createElement("img");
+      logo.src = "assets/logo.png";
+      logo.className = "intro-logo";
+      inner.insertBefore(logo, inner.firstChild);
       const startBtn = document.createElement("button");
       startBtn.className = "btn-start";
       startBtn.textContent = "Begin Application →";
@@ -263,10 +268,11 @@ function prevPage() {
     const old = document.getElementById(`page-${currentPage}`);
     old.classList.remove("active");
     old.classList.add("exit-right");
-    setTimeout(() => { old.style.display = "none"; }, 400);
+    setTimeout(() => { old.style.display = "none"; old.classList.remove("exit-right"); }, 400);
 
     currentPage--;
     const prev = document.getElementById(`page-${currentPage}`);
+    prev.classList.remove("exit-left", "exit-right");
     prev.style.display = "flex";
     void prev.offsetWidth;
     prev.classList.add("active");

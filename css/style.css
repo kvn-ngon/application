@@ -147,7 +147,7 @@ body {
 /* ── QUESTION TEXT ────────────────────────────────────────── */
 .question-text {
   font-family: var(--font-display);
-  font-weight: 300;
+  font-weight: 700;
   font-size: clamp(2rem, 5vw, 3.2rem);
   line-height: 1.15;
   color: var(--white);
@@ -472,4 +472,17 @@ body {
     padding: 12px 20px;
     font-size: 0.85rem;
   }
+}
+
+/* ── INTRO PAGE CUSTOMIZATION ─────────────────────────────────────────── */
+.intro-centered {
+  text-align: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.intro-logo {
+  width: 240px;
+  margin-bottom: 32px;
 }
