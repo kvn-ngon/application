@@ -41,8 +41,8 @@ const CONFIG = {
     {
       id: "intro",
       type: "intro",
-      question: "Let's start your journey.",
-      hint: "This application takes about 5 minutes. Be honest — there are no wrong answers.",
+      question: "EAT TASTY LOOK TASTY",
+      hint: "The goal is for you to outgrow us.",
     },
 
     // ── PAGE 2: Multi-short (grouped fields) ─────────────────
@@ -155,7 +155,7 @@ const CONFIG = {
     {
       id: "ending",
       type: "ending",
-      question: "After clicking DONE.",
+      question: "You're all done.",
       hint: "Message \"Finished\" to @kvn.ngon on Instagram — excited to speak to you soon!",
     },
 
