@@ -6,16 +6,14 @@
 const CONFIG = {
 
   // ── BRANDING ──────────────────────────────────────────────
-  title: "Coaching Program",
-  subtitle: "Application",
+  title: "EAT TASTY LOOK TASTY",
+  subtitle: "The #1 Fitness Program for Food",
 
   // Background image path (relative). Use "" for no background.
   // Drop your image into the /assets/ folder and reference it here.
   backgroundImage: "assets/background.jpg",
 
-  // Formspree endpoint — replace XXXXXXXX with your Formspree form ID.
-  // Sign up free at https://formspree.io → New Form → copy the ID.
-  // Your responses will be emailed to reachmrkvn@gmail.com once set up.
+  // Formspree endpoint
   formspreeEndpoint: "https://formspree.io/f/xdajklpg",
 
   // ── PAGES / QUESTIONS ─────────────────────────────────────
@@ -43,111 +41,123 @@ const CONFIG = {
     {
       id: "intro",
       type: "intro",
-      question: "Let's start your journey.",
-      hint: "This application takes about 5 minutes. Be honest — there are no wrong answers.",
+      question: "EAT TASTY LOOK TASTY",
+      hint: "The goal is for you to outgrow us.",
     },
 
-    // ── PAGE 2: Short answer ──────────────────────────────
+    // ── PAGE 2: Multi-short (grouped fields) ─────────────────
     {
-      id: "full_name",
-      type: "short",
-      question: "What's your full name?",
-      hint: "",
-      placeholder: "Jane Smith",
-      required: true,
+      id: "contact_info",
+      type: "multi-short",
+      question: "Tell me about yourself.",
+      hint: "Just the basics to get started.",
+      fields: [
+        { id: "first_name", label: "First Name",    placeholder: "Jane",              required: true  },
+        { id: "last_name",  label: "Last Name",     placeholder: "Smith",             required: true  },
+        { id: "phone",      label: "Phone Number",  placeholder: "+61 400 000 000",   required: true  },
+        { id: "email",      label: "Email Address", placeholder: "jane@example.com",  required: true  },
+      ],
     },
 
-    // ── PAGE 3: Short answer ──────────────────────────────
-    {
-      id: "email",
-      type: "short",
-      question: "What's the best email to reach you?",
-      hint: "I'll use this to send you next steps.",
-      placeholder: "jane@example.com",
-      required: true,
-    },
-
-    // ── PAGE 4: Choice (pick one) ─────────────────────────
+    // ── PAGE 3: Choice (pick one) ─────────────────────────
     {
       id: "coaching_goal",
       type: "choice",
-      question: "What's your primary goal right now?",
-      hint: "Choose the one that resonates most.",
-      required: true,
-      options: [
-        "Grow my business revenue",
-        "Find clarity in my career direction",
-        "Build confidence & mindset",
-        "Improve work-life balance",
-        "Launch something new",
-        "Other",
-      ],
-    },
-
-    // ── PAGE 5: Checklist (pick many) ─────────────────────
-    {
-      id: "challenges",
-      type: "checklist",
-      question: "What challenges are you currently facing?",
-      hint: "Select all that apply.",
-      required: true,
-      options: [
-        "Lack of clarity on next steps",
-        "Procrastination & self-doubt",
-        "Not enough accountability",
-        "Burnout or overwhelm",
-        "Difficulty prioritising",
-        "Imposter syndrome",
-        "Struggling to monetise my skills",
-      ],
-    },
-
-    // ── PAGE 6: Long answer ───────────────────────────────
-    {
-      id: "current_situation",
-      type: "long",
-      question: "Describe where you are right now.",
-      hint: "What does your day-to-day look like? What's working, and what isn't?",
-      placeholder: "Write as much or as little as you'd like…",
-      required: true,
-    },
-
-    // ── PAGE 7: Long answer ───────────────────────────────
-    {
-      id: "desired_outcome",
-      type: "long",
-      question: "What would success look like in 6 months?",
-      hint: "Be specific. Paint me a picture of your ideal outcome.",
-      placeholder: "In 6 months I want to…",
-      required: true,
-    },
-
-    // ── PAGE 8: Choice (pick one) ─────────────────────────
-    {
-      id: "investment_readiness",
-      type: "choice",
-      question: "Are you ready to invest in yourself?",
-      hint: "Coaching is a partnership — I want to make sure the timing is right for you.",
-      required: true,
-      options: [
-        "Yes — I'm ready to commit now",
-        "I need to know more about pricing first",
-        "I'm exploring options for the next 1–3 months",
-        "Not quite ready yet, but want to stay in touch",
-      ],
-    },
-
-    // ── PAGE 9: Short answer ──────────────────────────────
-    {
-      id: "referral",
-      type: "short",
-      question: "How did you hear about me?",
+      question: "How can I help you?",
       hint: "",
-      placeholder: "Instagram, referral, Google…",
-      required: false,
+      required: true,
+      options: [
+        "Weight Loss",
+        "Build Muscle",
+        "Healthy Lifestyle",
+        "Recomp (get toned)",
+        "recomp (build muscle and lose fat)",
+      ],
     },
 
-    // ── Add more pages below following the same pattern ───
+    // ── PAGE 4: Short answer ──────────────────────
+    {
+      id: "age",
+      type: "short",
+      question: "What is your age?",
+      hint: "",
+      placeholder: "Type your answer here...",
+      required: true,
+    },
+
+    // ── PAGE 5: Short answer ──────────────────────
+    {
+      id: "location",
+      type: "short",
+      question: "Where are you located?",
+      hint: "e.g. city or country",
+      placeholder: "Type your answer here...",
+      required: true,
+    },
+
+    // ── PAGE 6: Short answer ──────────────────────
+    {
+      id: "instagram",
+      type: "short",
+      question: "What is your Instagram handle?",
+      hint: "e.g. @kvn.ngon",
+      placeholder: "Type your answer here...",
+      required: true,
+    },
+
+    // ── PAGE 7: Short answer ──────────────────────
+    {
+      id: "occupation",
+      type: "short",
+      question: "What is your occupation?",
+      hint: "e.g. Software Engineer, Accountant, Nurse, Student, Electrician etc.",
+      placeholder: "Type your answer here...",
+      required: true,
+    },
+    
+
+    // ── PAGE 8: Long answer ───────────────────────────────
+    {
+      id: "motivation",
+      type: "long",
+      question: "What is your motivation to start now?",
+      hint: "(e.g. Holiday trip in 3 months)",
+      placeholder: "Write as much or as little as you'd like...",
+      required: true,
+    },
+
+    // ── PAGE 9: Choice (pick one) ─────────────────────────
+    {
+      id: "commitment_level",
+      type: "choice",
+      question: "How committed are you to invest in your fitness goals",
+      hint: "",
+      required: true,
+      options: [
+        "I'm all in - I understand that growth requires investment and I'm ready to commit what's necessary",
+        "I'm serious about this - but need to see how it fits in my budget",
+        "I'm interested - but I don't really have much funds to invest at the moment",
+        "I'm mostly just looking for some free advice",
+      ],
+    },
+
+    // ── PAGE 8: Long answer ───────────────────────────────
+    {
+      id: "specifically",
+      type: "long",
+      question: "Why do you want to work with me specifically?",
+      hint: "",
+      placeholder: "Write as much or as little as you'd like...",
+      required: true,
+    },
+
+    // ── Last page: Ending ─────────────────────────────────────
+    {
+      id: "ending",
+      type: "ending",
+      question: "You're all done.",
+      hint: "Message \"Finished\" to @kvn.ngon on Instagram — excited to speak to you soon!",
+    },
 
   ],
 };
