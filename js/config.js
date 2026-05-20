@@ -151,13 +151,5 @@ const CONFIG = {
       required: true,
     },
 
-    // ── Last page: Ending ─────────────────────────────────────                                         
-      {                                                                                                     
-      id: "ending",                                                                                       
-      type: "ending",                                                                                     
-      question: "You're all done.",                                                                       
-      hint: "Message \"Finished\" to @kvn.ngon on Instagram — excited to speak to you soon!",             
-     },
-
   ],
 };
