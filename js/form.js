@@ -21,6 +21,8 @@ function renderPages() {
   const container = document.getElementById("pagesContainer");
   container.innerHTML = "";
 
+  let questionNum = 0;
+
   CONFIG.pages.forEach((page, index) => {
     const div = document.createElement("div");
     div.className = "page";
@@ -30,13 +32,56 @@ function renderPages() {
     const inner = document.createElement("div");
     inner.className = "page-inner";
 
-    // Question heading
+    // ── INTRO PAGE ──────────────────────────────────────────
+    if (page.type === "intro") {
+      inner.classList.add("intro-centered");
+
+      const logo = document.createElement("img");
+      logo.src = "assets/logo.png";
+      logo.className = "intro-logo";
+      logo.alt = "Logo";
+      inner.appendChild(logo);
+
+      const q = document.createElement("h2");
+      q.className = "question-text";
+      q.textContent = page.question;
+      inner.appendChild(q);
+
+      if (page.hint) {
+        const hint = document.createElement("p");
+        hint.className = "question-hint";
+        hint.textContent = page.hint;
+        inner.appendChild(hint);
+      }
+
+      const inputWrap = document.createElement("div");
+      inputWrap.className = "input-wrap";
+
+      const startBtn = document.createElement("button");
+      startBtn.className = "btn-start";
+      startBtn.textContent = "Begin Application →";
+      startBtn.onclick = () => nextPage();
+      inputWrap.appendChild(startBtn);
+
+      inner.appendChild(inputWrap);
+      div.appendChild(inner);
+      container.appendChild(div);
+      return;
+    }
+
+    // ── ALL OTHER PAGES ─────────────────────────────────────
+    questionNum++;
+
+    const numWrap = document.createElement("div");
+    numWrap.className = "question-number";
+    numWrap.innerHTML = `<span class="question-number-badge">${questionNum}</span>`;
+    inner.appendChild(numWrap);
+
     const q = document.createElement("h2");
     q.className = "question-text";
     q.textContent = page.question;
     inner.appendChild(q);
 
-    // Hint
     if (page.hint) {
       const hint = document.createElement("p");
       hint.className = "question-hint";
@@ -44,22 +89,10 @@ function renderPages() {
       inner.appendChild(hint);
     }
 
-    // Input area
     const inputWrap = document.createElement("div");
     inputWrap.className = "input-wrap";
 
-    if (page.type === "intro") {
-      inner.classList.add("intro-centered");
-      const logo = document.createElement("img");
-      logo.src = "assets/logo.png";
-      logo.className = "intro-logo";
-      inner.insertBefore(logo, inner.firstChild);
-      const startBtn = document.createElement("button");
-      startBtn.className = "btn-start";
-      startBtn.textContent = "Begin Application →";
-      startBtn.onclick = () => nextPage();
-      inputWrap.appendChild(startBtn);
-    } else if (page.type === "short") {
+    if (page.type === "short") {
       const inp = document.createElement("input");
       inp.type = page.id === "email" ? "email" : "text";
       inp.className = "input-short";
@@ -71,6 +104,7 @@ function renderPages() {
       });
       if (answers[page.id]) inp.value = answers[page.id];
       inputWrap.appendChild(inp);
+      inputWrap.appendChild(makeOkButton());
 
     } else if (page.type === "multi-short") {
       page.fields.forEach((field) => {
@@ -90,7 +124,6 @@ function renderPages() {
         inp.addEventListener("input", () => saveAnswer(field.id, inp.value));
         inp.addEventListener("keydown", (e) => {
           if (e.key === "Enter") {
-            // Move to next field or next page
             const fields = page.fields;
             const idx = fields.indexOf(field);
             if (idx < fields.length - 1) {
@@ -106,6 +139,7 @@ function renderPages() {
         fieldWrap.appendChild(inp);
         inputWrap.appendChild(fieldWrap);
       });
+      inputWrap.appendChild(makeOkButton());
 
     } else if (page.type === "long") {
       const ta = document.createElement("textarea");
@@ -116,6 +150,7 @@ function renderPages() {
       ta.addEventListener("input", () => saveAnswer(page.id, ta.value));
       if (answers[page.id]) ta.value = answers[page.id];
       inputWrap.appendChild(ta);
+      inputWrap.appendChild(makeOkButton());
 
     } else if (page.type === "choice") {
       page.options.forEach((opt) => {
@@ -129,7 +164,6 @@ function renderPages() {
         radio.addEventListener("change", () => {
           saveAnswer(page.id, opt);
           highlightChoice(page.id, opt);
-          // Auto-advance after short delay
           setTimeout(() => nextPage(), 400);
         });
         if (answers[page.id] === opt) {
@@ -173,6 +207,7 @@ function renderPages() {
         label.appendChild(span);
         inputWrap.appendChild(label);
       });
+      inputWrap.appendChild(makeOkButton());
     }
 
     inner.appendChild(inputWrap);
@@ -181,14 +216,29 @@ function renderPages() {
   });
 }
 
+function makeOkButton() {
+  const wrap = document.createElement("div");
+
+  const btn = document.createElement("button");
+  btn.className = "btn-ok";
+  btn.innerHTML = `OK <span style="font-size:0.85rem">✓</span>`;
+  btn.onclick = () => nextPage();
+  wrap.appendChild(btn);
+
+  const hint = document.createElement("p");
+  hint.className = "btn-ok-hint";
+  hint.textContent = "press Enter ↵";
+  wrap.appendChild(hint);
+
+  return wrap;
+}
+
 function highlightChoice(pageId, selectedVal) {
   const page = CONFIG.pages.find((p) => p.id === pageId);
   if (!page) return;
-  page.options.forEach((opt) => {
-    const labels = document.querySelectorAll(`#page-${CONFIG.pages.indexOf(page)} .choice-item`);
-    labels.forEach((lbl) => {
-      lbl.classList.toggle("selected", lbl.querySelector("input").value === selectedVal);
-    });
+  const labels = document.querySelectorAll(`#page-${CONFIG.pages.indexOf(page)} .choice-item`);
+  labels.forEach((lbl) => {
+    lbl.classList.toggle("selected", lbl.querySelector("input").value === selectedVal);
   });
 }
 
@@ -204,7 +254,6 @@ function showPage(index) {
   const target = document.getElementById(`page-${index}`);
   if (target) {
     target.style.display = "flex";
-    // Trigger reflow for animation
     void target.offsetWidth;
     target.classList.add("active");
   }
@@ -212,7 +261,6 @@ function showPage(index) {
   updateNav(index);
   updateProgress(index);
 
-  // Focus first input
   setTimeout(() => {
     const inp = target && target.querySelector("input:not([type=radio]):not([type=checkbox]), textarea");
     if (inp) inp.focus();
@@ -287,17 +335,15 @@ function updateNav(index) {
   const btnNext = document.getElementById("btnNext");
   const btnSubmit = document.getElementById("btnSubmit");
   const isLast = index === CONFIG.pages.length - 1;
-  const isIntro = CONFIG.pages[index].type === "intro";
-  const isChoice = CONFIG.pages[index].type === "choice";
-
   const isEnding = CONFIG.pages[index].type === "ending";
-  btnBack.style.display = (index === 0 || isEnding) ? "none" : "inline-block";
-  btnNext.style.display = (isLast || isIntro || isChoice || isEnding) ? "none" : "inline-block";
+
+  btnBack.style.display = index === 0 ? "none" : "inline-block";
+  btnNext.style.display = "none";
   btnSubmit.style.display = (isLast && !isEnding) ? "inline-block" : "none";
 }
 
 function updateProgress(index) {
-  const pct = ((index) / (CONFIG.pages.length - 1)) * 100;
+  const pct = (index / (CONFIG.pages.length - 1)) * 100;
   document.getElementById("progressBar").style.width = pct + "%";
 }
 
@@ -330,7 +376,6 @@ async function submitForm() {
   btnSubmit.textContent = "Sending…";
   btnSubmit.disabled = true;
 
-  // Build form data
   const formData = new FormData();
   CONFIG.pages.forEach((page) => {
     if (page.type === "intro") return;
@@ -343,12 +388,12 @@ async function submitForm() {
     }
     const val = answers[page.id];
     if (val !== undefined && val !== "") {
-      const label = page.question;
       const value = Array.isArray(val) ? val.join(", ") : val;
-      formData.append(label, value);
+      formData.append(page.question, value);
     }
   });
   formData.append("_subject", "New Coaching Application");
+  formData.append("email", answers["email"] || "");
   formData.append("_replyto", answers["email"] || "");
 
   try {
