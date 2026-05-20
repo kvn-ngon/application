@@ -407,7 +407,10 @@ async function submitForm() {
       showEnding();
     } else {
       const data = await res.json();
-      alert("Submission failed: " + (data.error || "Unknown error. Please try again."));
+      const msg = data.errors
+        ? data.errors.map((e) => e.message || e.field).join(", ")
+        : (data.error || "Unknown error. Please try again.");
+      alert("Submission failed: " + msg);
       btnSubmit.textContent = "Submit Application";
       btnSubmit.disabled = false;
     }
