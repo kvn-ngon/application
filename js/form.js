@@ -289,11 +289,12 @@ function updateNav(index) {
   const isLast = index === CONFIG.pages.length - 1;
   const isIntro = CONFIG.pages[index].type === "intro";
   const isChoice = CONFIG.pages[index].type === "choice";
-
+  const nextIsEnding = !isLast && CONFIG.pages[index + 1].type === "ending";
   const isEnding = CONFIG.pages[index].type === "ending";
+
   btnBack.style.display = (index === 0 || isEnding) ? "none" : "inline-block";
-  btnNext.style.display = (isLast || isIntro || isChoice || isEnding) ? "none" : "inline-block";
-  btnSubmit.style.display = (isLast && !isEnding) ? "inline-block" : "none";
+  btnNext.style.display = (isLast || isIntro || isChoice || isEnding || nextIsEnding) ? "none" : "inline-block";
+  btnSubmit.style.display = ((isLast && !isEnding) || nextIsEnding) ? "inline-block" : "none";
 }
 
 function updateProgress(index) {
@@ -362,7 +363,10 @@ async function submitForm() {
       showEnding();
     } else {
       const data = await res.json();
-      alert("Submission failed: " + (data.error || "Unknown error. Please try again."));
+      const msg = data.errors
+        ? data.errors.map((e) => e.message || e.field).join(", ")
+        : (data.error || "Unknown error. Please try again.");
+      alert("Submission failed: " + msg);
       btnSubmit.textContent = "Submit Application";
       btnSubmit.disabled = false;
     }
