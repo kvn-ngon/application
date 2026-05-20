@@ -14,7 +14,7 @@ const CONFIG = {
   backgroundImage: "assets/Background.png",
 
   // Formspree endpoint
-  formspreeEndpoint: "https://formspree.io/f/mredpzvb",
+  formspreeEndpoint: "https://formspree.io/f/maqkewrb",
 
   // ── PAGES / QUESTIONS ─────────────────────────────────────
   // Each object = one page (one question per page).
