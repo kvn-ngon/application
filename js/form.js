@@ -150,7 +150,7 @@ function renderPages() {
       ta.addEventListener("input", () => saveAnswer(page.id, ta.value));
       if (answers[page.id]) ta.value = answers[page.id];
       inputWrap.appendChild(ta);
-      inputWrap.appendChild(makeOkButton());
+      if (index < CONFIG.pages.length - 1) inputWrap.appendChild(makeOkButton());
 
     } else if (page.type === "choice") {
       page.options.forEach((opt) => {

@@ -11,7 +11,7 @@ const CONFIG = {
 
   // Background image path (relative). Use "" for no background.
   // Drop your image into the /assets/ folder and reference it here.
-  backgroundImage: "assets/background.jpg",
+  backgroundImage: "assets/Background.png",
 
   // Formspree endpoint
   formspreeEndpoint: "https://formspree.io/f/xdajklpg",
